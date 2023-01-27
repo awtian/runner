@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import { Progress } from '@mantine/core';
+import Slider from '@/components/index/slider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,7 +18,7 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
     
-        <div className={styles.center}>
+        {/* <div className={styles.center}>
           <Image
             className={styles.logo}
             src="/next.svg"
@@ -36,16 +37,16 @@ export default function Home() {
               priority
             />
           </div>
-        </div>
+        </div> */}
 
         <div className={styles.tugbar}>
+        <Slider />
         <Progress
           radius="xl"
-          size={24}
+          size={48}
           sections={[
-            { value: 48, color: 'red', label: 'Team A', tooltip: 'Team A' },
-            { value: 4, color: 'yellow', label: '' },
-            { value: 48, color: 'blue', label: 'Team B', tooltip: 'Team B' },
+            { value: 50, color: 'red', label: 'Team A', tooltip: 'Team A' },
+            { value: 50, color: 'blue', label: 'Team B', tooltip: 'Team B' },
           ]}
         />
         </div>
