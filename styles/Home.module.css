@@ -46,6 +46,12 @@
   max-width: 100%;
 }
 
+.tugbar {
+  /* display: flex; */
+  width: var(--max-width);
+  max-width: 100%;
+}
+
 .card {
   padding: 1rem 1.2rem;
   border-radius: var(--border-radius);
