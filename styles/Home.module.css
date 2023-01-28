@@ -50,6 +50,7 @@
   /* display: flex; */
   width: var(--max-width);
   max-width: 100%;
+  text-align: center;
 }
 
 .card {
