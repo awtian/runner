@@ -27,6 +27,7 @@
     "next-svgr": "^0.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "shake-detector": "^0.3.8",
     "tabler-icons-react": "^1.56.0",
     "typescript": "4.9.4"
   },

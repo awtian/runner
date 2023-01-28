@@ -13,13 +13,19 @@ export default function Control() {
   const [team, setTeam] = useState('red');
   const [redTeam, setRedteam] = useState(0);
   const [blueTeam, setBlueTeam] = useState(0);
+  const [teamConfirmed, setTeamConfirmed] = useState(false);
 
   function advanceTeam(team: string) {
+    confirmTeam()
     if (team === 'blue') {
       set(ref(rtdb, '/' + team), blueTeam + increment);
     } else {
       set(ref(rtdb, '/' + team), redTeam + increment);
     }
+  }
+
+ function confirmTeam() {
+    setTeamConfirmed(true)
   }
 
   useEffect(() => {
@@ -36,13 +42,14 @@ export default function Control() {
 
   return (
     <Center style={{ height: '100vh', flexDirection: 'column', backgroundColor: color[team], rowGap: 20 }}>
-      <h1>Choose your team!</h1>
+      <h1 style={{fontFamily: 'arial'}}>Choose your team!</h1>
       <NativeSelect
+        disabled={teamConfirmed}
         value={team}
         onChange={(event) => setTeam(event.currentTarget.value)}
         data={[{ value: 'red', label: 'Red Team' }, { value: 'blue', label: 'Blue Team' }]}
       />
-      <Button color="green" onClick={() => {advanceTeam(team)}}>Run!</Button>
+      <Button color="green" disabled={teamConfirmed} onClick={() => {advanceTeam(team)}}> {!teamConfirmed ? 'Confirm Team' : 'Shake your device to start running!'}</Button>
 
     </Center>
   )
