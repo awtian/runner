@@ -16,15 +16,9 @@ export default function Control() {
 
   function advanceTeam(team: string) {
     if (team === 'blue') {
-      set(ref(rtdb, '/'), {
-        blue: blueTeam + increment,
-        red: redTeam
-      });
+      set(ref(rtdb, '/' + team), blueTeam + increment);
     } else {
-      set(ref(rtdb, '/'), {
-        blue: blueTeam,
-        red: redTeam + increment
-      });
+      set(ref(rtdb, '/' + team), redTeam + increment);
     }
   }
 
@@ -48,7 +42,7 @@ export default function Control() {
         onChange={(event) => setTeam(event.currentTarget.value)}
         data={[{ value: 'red', label: 'Red Team' }, { value: 'blue', label: 'Blue Team' }]}
       />
-      <Button color="green">Run!</Button>
+      <Button color="green" onClick={() => {advanceTeam(team)}}>Run!</Button>
 
     </Center>
   )
