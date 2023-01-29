@@ -19,7 +19,6 @@ export default function Home() {
 
         <div className={styles.gameboard}>
           <GameBoard />
-          <code className={styles.code}>How to play?</code>
         </div>
       </main>
     </>

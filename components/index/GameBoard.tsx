@@ -1,12 +1,13 @@
-import { Slider, Button } from '@mantine/core';
+import { Slider, Button, Text } from '@mantine/core';
 import { Run } from 'tabler-icons-react';
+
 // Firebase
 import { rtdb } from "@/utils/firebase";
 import { onValue, ref, set } from "firebase/database";
 
 import { useState, useEffect } from 'react';
+import styles from '@/styles/Home.module.css'
 
-const styles = { thumb: { borderWidth: 5, height: 80, width: 80, padding: 4 } };
 // const increment = 5;
 
 export default function GameBoard() {
@@ -32,38 +33,42 @@ export default function GameBoard() {
 
   let winning;
   if (redTeam > 100) {
-    winning = <span>Red Win</span>;
+    winning = <Text fw={700} fz="xl"c="red">Red Team Win</Text>;
   } else if (blueTeam > 100) {
-    winning = <span>Blue Win</span>;
+    winning = <Text fw={700} fz="xl"c="blue">Blue Team Win</Text>;
   }
 
-  const resetButton = <Button color="violet" onClick={resetGame}> Reset Game</Button>
+  const resetButton = winning ? <Button color="violet" onClick={resetGame}> Reset Game</Button> : ''
   
   return (
     <>
-      <p style={{fontFamily: 'Verdana, sans-serif', padding: '10px'}}>just another simple running game</p>
+      <Text c="white" style={{fontFamily: 'Verdana, sans-serif', padding: '10px'}}>just another simple running game</Text>
       { winning }
       { resetButton }
-      <Slider
-        color="red"
-        radius="xl"
-        size={48}
-        label={null}
-        value={redTeam}
-        styles={styles}
-        // onClick={() => advanceTeam('red')}
-        thumbChildren={<Run size={66} />}
-      />
-      <Slider
-        color="blue"
-        radius="xl"
-        size={48}
-        label={null}
-        value={blueTeam}
-        // onClick={() => advanceTeam('blue')}
-        styles={styles}
-        thumbChildren={<Run size={66} />}
-      />
+      {!winning && 
+        <>
+          <Slider
+            color="red"
+            radius="xl"
+            size={48}
+            label={null}
+            value={redTeam}
+            styles={styles}
+            // onClick={() => advanceTeam('red')}
+            thumbChildren={<Run size={66} />}
+          />
+          <Slider
+            color="blue"
+            radius="xl"
+            size={48}
+            label={null}
+            value={blueTeam}
+            // onClick={() => advanceTeam('blue')}
+            styles={styles}
+            thumbChildren={<Run size={66} />}
+          /> 
+          <code className={styles.code}>How to play?</code>
+      </>}
     </>
   );
 }
