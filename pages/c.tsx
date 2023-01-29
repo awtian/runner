@@ -31,22 +31,25 @@ export default function Control() {
     blueTeamRef.current = data;
     _setBlueTeam(data);
   };
-  const [teamConfirmed, setTeamConfirmed] = useState(false);
+  const [teamConfirmed, _setTeamConfirmed] = useState(false);
+  const teamConfirmedRef = React.useRef(teamConfirmed)
+  const setTeamConfirmed = (data:boolean) => {
+    teamConfirmedRef.current = data;
+    _setTeamConfirmed(data)
+  }
 
   // created to lessen the strain on the real time database
   // const [ shakeCount, setShakeCount ] = useState(0);
 
   function advanceTeam() {
-    if (teamRef.current === 'blue') {
-      set(ref(rtdb, '/' + teamRef.current), blueTeamRef.current + increment);
-    } else {
-      set(ref(rtdb, '/' + teamRef.current), redTeamRef.current + increment);
+    if (teamConfirmedRef.current) {
+      if (teamRef.current === 'blue') {
+        set(ref(rtdb, '/' + teamRef.current), blueTeamRef.current + increment);
+      } else {
+        set(ref(rtdb, '/' + teamRef.current), redTeamRef.current + increment);
+      }
     }
   }
-
-  const onShake = useCallback(() => {
-    advanceTeam()
-  }, []);
 
   useEffect(() => {
     // firebase
@@ -68,14 +71,14 @@ export default function Control() {
     
     shakeDetector.requestPermission(requestTrigger).then(() => {
       shakeDetector.start();
-      window.addEventListener(ShakeDetector.SHAKE_EVENT, onShake );
+      window.addEventListener(ShakeDetector.SHAKE_EVENT, advanceTeam );
     });
     
     return () => {
-      window.removeEventListener(ShakeDetector.SHAKE_EVENT, onShake)
+      window.removeEventListener(ShakeDetector.SHAKE_EVENT, advanceTeam);
     }
-
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Center style={{ height: '100vh', flexDirection: 'column', backgroundColor: color[team], rowGap: 20 }}>
