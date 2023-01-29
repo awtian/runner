@@ -42,7 +42,7 @@ export default function Control() {
   // const [ shakeCount, setShakeCount ] = useState(0);
 
   function advanceTeam() {
-    if (teamConfirmedRef.current) {
+    if (teamConfirmedRef.current && (blueTeamRef.current < 100 || redTeamRef.current < 100)) {
       if (teamRef.current === 'blue') {
         set(ref(rtdb, '/' + teamRef.current), blueTeamRef.current + increment);
       } else {

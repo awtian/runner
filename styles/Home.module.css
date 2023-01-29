@@ -46,7 +46,8 @@
   max-width: 100%;
 }
 
-.tugbar {
+.gameboard {
+  font-family: 'Verdana, sans-serif';
   /* display: flex; */
   width: var(--max-width);
   max-width: 100%;
