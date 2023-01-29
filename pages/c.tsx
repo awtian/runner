@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Center, NativeSelect, Button } from '@mantine/core';
 import { rtdb } from "@/utils/firebase";
 import { onValue, ref, set } from "firebase/database";
+import ShakeDetector from 'shake-detector';
+// ...
 
 interface ColorType {
   [index:string]: string;
@@ -10,35 +12,70 @@ const color: ColorType = { blue: "#228BE6", red: "#FA5252" }
 const increment = 3;
 
 export default function Control() {
-  const [team, setTeam] = useState('red');
-  const [redTeam, setRedteam] = useState(0);
-  const [blueTeam, setBlueTeam] = useState(0);
+  // states
+  const [team, _setTeam] = useState('red');
+  const teamRef = React.useRef(team);
+  const setTeam = (data:string) => {
+    teamRef.current = data;
+    _setTeam(data);
+  };
+  const [redTeam, _setRedTeam] = useState(0);
+  const redTeamRef = React.useRef(redTeam);
+  const setRedTeam = (data:number) => {
+    redTeamRef.current = data;
+    _setRedTeam(data);
+  };
+  const [blueTeam, _setBlueTeam] = useState(0);
+  const blueTeamRef = React.useRef(blueTeam);
+  const setBlueTeam = (data:number) => {
+    blueTeamRef.current = data;
+    _setBlueTeam(data);
+  };
   const [teamConfirmed, setTeamConfirmed] = useState(false);
 
-  function advanceTeam(team: string) {
-    confirmTeam()
-    if (team === 'blue') {
-      set(ref(rtdb, '/' + team), blueTeam + increment);
+  // created to lessen the strain on the real time database
+  // const [ shakeCount, setShakeCount ] = useState(0);
+
+  function advanceTeam() {
+    if (teamRef.current === 'blue') {
+      set(ref(rtdb, '/' + teamRef.current), blueTeamRef.current + increment);
     } else {
-      set(ref(rtdb, '/' + team), redTeam + increment);
+      set(ref(rtdb, '/' + teamRef.current), redTeamRef.current + increment);
     }
   }
 
- function confirmTeam() {
-    setTeamConfirmed(true)
-  }
+  const onShake = useCallback(() => {
+    advanceTeam()
+  }, []);
 
   useEffect(() => {
+    // firebase
     const query = ref(rtdb, "/");
     return onValue(query, (snapshot) => {
       const data = snapshot.val();
 
       if (snapshot.exists()) {
-        setRedteam(data.red)
+        setRedTeam(data.red)
         setBlueTeam(data.blue)
       }
     });
-  }, []);
+  }, [])
+
+  useEffect(() => {
+    // ShakeDetector permission and initiation
+    const shakeDetector = new ShakeDetector({debounceDelay: 100});
+    const requestTrigger = document.getElementById('requestTrigger') || undefined;
+    
+    shakeDetector.requestPermission(requestTrigger).then(() => {
+      shakeDetector.start();
+      window.addEventListener(ShakeDetector.SHAKE_EVENT, onShake );
+    });
+    
+    return () => {
+      window.removeEventListener(ShakeDetector.SHAKE_EVENT, onShake)
+    }
+
+  });
 
   return (
     <Center style={{ height: '100vh', flexDirection: 'column', backgroundColor: color[team], rowGap: 20 }}>
@@ -49,7 +86,7 @@ export default function Control() {
         onChange={(event) => setTeam(event.currentTarget.value)}
         data={[{ value: 'red', label: 'Red Team' }, { value: 'blue', label: 'Blue Team' }]}
       />
-      <Button color="green" disabled={teamConfirmed} onClick={() => {advanceTeam(team)}}> {!teamConfirmed ? 'Confirm Team' : 'Shake your device to start running!'}</Button>
+      <Button id="requestTrigger" color="green" disabled={teamConfirmed} onClick={() => {setTeamConfirmed(true)}}> {!teamConfirmed ? 'Confirm Team' : 'Shake your device to start running!'}</Button>
 
     </Center>
   )
