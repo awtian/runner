@@ -32,9 +32,9 @@ export default function GameBoard() {
   }
 
   let winning;
-  if (redTeam > 100) {
+  if (redTeam >= 100) {
     winning = <Text fw={700} fz="xl"c="red">Red Team Win</Text>;
-  } else if (blueTeam > 100) {
+  } else if (blueTeam >= 100) {
     winning = <Text fw={700} fz="xl"c="blue">Blue Team Win</Text>;
   }
 
