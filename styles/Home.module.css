@@ -37,7 +37,10 @@
 .code {
   font-weight: 700;
   font-family: var(--font-mono);
+  font-size: x-large;
+  cursor: pointer;
 }
+
 
 .grid {
   display: grid;
@@ -283,4 +286,10 @@
   to {
     transform: rotate(0deg);
   }
+}
+
+.controller-link {
+  font-weight: 700;
+  font-family: var(--font-mono);
+  cursor: pointer;
 }

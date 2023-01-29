@@ -1,5 +1,6 @@
-import { Slider, Button, Text } from '@mantine/core';
+import { Slider, Button, Text, useMantineTheme, Modal, List  } from '@mantine/core';
 import { Run } from 'tabler-icons-react';
+import Link from 'next/link'
 
 // Firebase
 import { rtdb } from "@/utils/firebase";
@@ -8,11 +9,13 @@ import { onValue, ref, set } from "firebase/database";
 import { useState, useEffect } from 'react';
 import styles from '@/styles/Home.module.css'
 
-// const increment = 5;
 
 export default function GameBoard() {
   const [redTeam, setRedteam] = useState(0);
   const [blueTeam, setBlueTeam] = useState(0);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
+
+  const theme = useMantineTheme();
 
 
   useEffect(() => {
@@ -54,7 +57,6 @@ export default function GameBoard() {
             label={null}
             value={redTeam}
             styles={styles}
-            // onClick={() => advanceTeam('red')}
             thumbChildren={<Run size={66} />}
           />
           <Slider
@@ -63,11 +65,26 @@ export default function GameBoard() {
             size={48}
             label={null}
             value={blueTeam}
-            // onClick={() => advanceTeam('blue')}
             styles={styles}
             thumbChildren={<Run size={66} />}
           /> 
-          <code className={styles.code}>How to play?</code>
+          <code className={styles.code} onClick={()=> setShowHowToPlay(true)}>How to play?</code>
+          <Modal 
+            size="lg" 
+            opened={showHowToPlay} 
+            onClose={() => setShowHowToPlay(false)}
+            centered
+            withCloseButton={false}
+            transition="fade"
+            transitionDuration={600}
+            transitionTimingFunction="ease"
+            >
+              <List withPadding>
+                <List.Item>Open the controller page with your phone on <Link href="/c" className={styles['controller-link']}>runner.awtian.com/c</Link></List.Item>
+                <List.Item>Choose your team then make sure you pressed the confirm button</List.Item>
+                <List.Item>Shake your phone as hard as you can, against the enemy team!</List.Item>
+              </List>
+          </Modal>
       </>}
     </>
   );
