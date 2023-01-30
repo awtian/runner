@@ -3,8 +3,8 @@ import { Center, NativeSelect, Button } from '@mantine/core';
 import { rtdb } from "@/utils/firebase";
 import { onValue, ref, set } from "firebase/database";
 import ShakeDetector from 'shake-detector';
-// ...
-
+// @ts-ignore
+import swal from '@sweetalert/with-react';
 interface ColorType {
   [index:string]: string;
 }
@@ -22,12 +22,14 @@ export default function Control() {
   const [redTeam, _setRedTeam] = useState(0);
   const redTeamRef = React.useRef(redTeam);
   const setRedTeam = (data:number) => {
+    if (data > 100) gameOver('red')
     redTeamRef.current = data;
     _setRedTeam(data);
   };
   const [blueTeam, _setBlueTeam] = useState(0);
   const blueTeamRef = React.useRef(blueTeam);
   const setBlueTeam = (data:number) => {
+    if (data > 100) gameOver('blue')
     blueTeamRef.current = data;
     _setBlueTeam(data);
   };
@@ -38,8 +40,21 @@ export default function Control() {
     _setTeamConfirmed(data)
   }
 
-  // created to lessen the strain on the real time database
-  // const [ shakeCount, setShakeCount ] = useState(0);
+  function gameOver (winning:string) {
+    if (winning === 'blue') {
+      teamRef.current === 'blue' ? gameOverSwal('win') : gameOverSwal('lose')
+    } else if (winning === 'red') {
+      teamRef.current === 'red' ? gameOverSwal('win') : gameOverSwal('lose')
+    }
+  }
+
+  function gameOverSwal (type:string) {
+    if (type === 'lose') {
+      swal({title: "You LOSE!", button: {text: "NOOO :(", className: 'lose-button' }, icon: "error"})
+    } else if (type === 'win') {
+      swal({title: "You won!", button: {text: "YAY!!", className: 'win-button' }, icon: "success"})
+    }
+  }
 
   function advanceTeam() {
     if (teamConfirmedRef.current && blueTeamRef.current < 100 && redTeamRef.current < 100) {
@@ -81,7 +96,7 @@ export default function Control() {
   }, []);
 
   return (
-    <Center style={{ height: '100vh', flexDirection: 'column', backgroundColor: color[team], rowGap: 20 }}>
+    <Center style={{ height: '100vh', flexDirection: 'column', backgroundColor: color[team], rowGap: 20, fontFamily: 'Verdana, sans-serif' }}>
       <h1 style={{fontFamily: 'arial'}}>Choose your team!</h1>
       <NativeSelect
         disabled={teamConfirmed}

@@ -105,3 +105,15 @@ a {
     color-scheme: dark;
   }
 }
+
+.lose-button {
+  background-color: #E03131;
+}
+
+.win-button {
+  background-color: #12B886;
+}
+
+.swal-title {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}

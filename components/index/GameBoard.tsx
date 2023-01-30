@@ -1,4 +1,4 @@
-import { Slider, Button, Text, useMantineTheme, Modal, List  } from '@mantine/core';
+import { Slider, Button, Text, Modal, List  } from '@mantine/core';
 import { Run } from 'tabler-icons-react';
 import Link from 'next/link'
 
@@ -15,7 +15,6 @@ export default function GameBoard() {
   const [blueTeam, setBlueTeam] = useState(0);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
 
-  const theme = useMantineTheme();
 
 
   useEffect(() => {
